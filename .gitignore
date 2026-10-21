@@ -1,0 +1,12 @@
+data/*
+!data/README.md
+results/
+external/
+config.local.yml
+.Renviron
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+.DS_Store
+__pycache__/

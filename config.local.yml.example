@@ -1,0 +1,15 @@
+# Copy to config.local.yml (not tracked) to override settings in config.yml.
+
+gpmap:
+  guids:                  # GPMap upload IDs
+    CeAD: ""
+    FMD: ""
+    IA: ""
+    SCAD: ""
+    AA: ""
+
+# ldsc:
+#   munge: /path/to/munge_sumstats.py
+#   ldsc: /path/to/ldsc.py
+# ukbb_ld:
+#   python: /path/to/python

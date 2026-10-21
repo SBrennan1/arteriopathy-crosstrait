@@ -1,0 +1,2 @@
+label	trait	draw	ldsc_subset	id	phenocode	description	category	n_cases_EUR	n_controls_EUR	h2_z_EUR	aws_link	aws_link_tabix
+hair_colour	reference		TRUE	categorical-1747-both_sexes-1	1747	Hair colour (natural, before greying): Blonde	UK Biobank Assessment Centre > Touchscreen > Lifestyle and environment > Sun exposure	47976	371493	7.5966	https://pan-ukb-us-east-1.s3.amazonaws.com/sumstats_flat_files/categorical-1747-both_sexes-1.tsv.bgz	https://pan-ukb-us-east-1.s3.amazonaws.com/sumstats_flat_files_tabix/categorical-1747-both_sexes-1.tsv.bgz.tbi

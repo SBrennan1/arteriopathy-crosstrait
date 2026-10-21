@@ -1,0 +1,22 @@
+gene	monogenic_disease	lof_mechanism
+FBN1	Marfan syndrome (AD)	TRUE
+COL4A1	"Small vessel disease, cerebral hemorrhage (AD)"	FALSE
+ECM1	Lipoid proteinosis (AR)	FALSE
+SLC39A8	CDG type IIn (AR)	FALSE
+ADAMTSL4	Ectopia lentis et pupillae (AR)	FALSE
+SLC22A5	Primary carnitine deficiency (AR)	FALSE
+PRDM6	Patent ductus arteriosus (AD)	FALSE
+OBFC1	Coats plus syndrome (AR)	FALSE
+CNNM2	Hypomagnesaemia (AD/AR)	FALSE
+FIP1L1	Hypereosinophilic syndrome (somatic)	FALSE
+SOX17	VUR; pulmonary hypertension (AD)	FALSE
+TGFB2	Loeys-Dietz syndrome type 4 (AD)	TRUE
+APOE	Hyperlipoproteinaemia type III (AR)	FALSE
+APOC3	Hypertriglyceridaemia (AR)	FALSE
+LTBP4	Cutis laxa type IC (AR)	TRUE
+PCSK9	Hypercholesterolaemia (AD)	FALSE
+CPOX	Hereditary coproporphyria (AR)	FALSE
+LIPA	Lysosomal acid lipase deficiency (AR)	FALSE
+LRP4	Sclerosteosis 2 / Cenani-Lenz (AR/AD)	FALSE
+THSD4	Familial thoracic aortic aneurysm and dissection (AD)	TRUE
+GUCY1A1	Moyamoya disease 6 with achalasia (AR)	TRUE

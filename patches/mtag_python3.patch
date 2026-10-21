@@ -1,0 +1,420 @@
+diff --git a/ldsc_mod/ldscore/allele_info.py b/ldsc_mod/ldscore/allele_info.py
+index 7359765..8f16aa9 100755
+--- a/ldsc_mod/ldscore/allele_info.py
++++ b/ldsc_mod/ldscore/allele_info.py
+@@ -1,3 +1,4 @@
++from functools import reduce
+ import itertools as it
+ '''
+ Contains useful objects related to allele relationships for ../munge_sumstats/py and sumstats.py
+diff --git a/ldsc_mod/ldscore/irwls.py b/ldsc_mod/ldscore/irwls.py
+index 2dc26d9..0b55c93 100755
+--- a/ldsc_mod/ldscore/irwls.py
++++ b/ldsc_mod/ldscore/irwls.py
+@@ -110,10 +110,10 @@ class IRWLS(object):
+                 'w has shape {S}. w must have shape ({N}, 1).'.format(S=w.shape, N=n))
+ 
+         w = np.sqrt(w)
+-        for i in xrange(2):  # update this later
++        for i in range(2):  # update this later
+             new_w = np.sqrt(update_func(cls.wls(x, y, w)))
+             if new_w.shape != w.shape:
+-                print 'IRWLS update:', new_w.shape, w.shape
++                print('IRWLS update:', new_w.shape, w.shape)
+                 raise ValueError('New weights must have same shape.')
+             else:
+                 w = new_w
+diff --git a/ldsc_mod/ldscore/jackknife.py b/ldsc_mod/ldscore/jackknife.py
+index d9d0cba..9b0b7a2 100755
+--- a/ldsc_mod/ldscore/jackknife.py
++++ b/ldsc_mod/ldscore/jackknife.py
+@@ -256,7 +256,7 @@ class LstsqJackknifeSlow(Jackknife):
+         '''
+         _check_shape(x, y)
+         d = [func(np.vstack([x[0:s[i], ...], x[s[i + 1]:, ...]]), np.vstack([y[0:s[i], ...], y[s[i + 1]:, ...]]))
+-             for i in xrange(len(s) - 1)]
++             for i in range(len(s) - 1)]
+ 
+         return np.concatenate(d, axis=0)
+ 
+@@ -346,7 +346,7 @@ class LstsqJackknifeFast(Jackknife):
+         n_blocks = len(s) - 1
+         xtx_block_values = np.zeros((n_blocks, p, p))
+         xty_block_values = np.zeros((n_blocks, p))
+-        for i in xrange(n_blocks):
++        for i in range(n_blocks):
+             xty_block_values[i, ...] = np.dot(
+                 x[s[i]:s[i + 1], ...].T, y[s[i]:s[i + 1], ...]).reshape((1, p))
+             xtx_block_values[i, ...] = np.dot(
+@@ -417,7 +417,7 @@ class LstsqJackknifeFast(Jackknife):
+         delete_values = np.zeros((n_blocks, p))
+         xty_tot = np.sum(xty_block_values, axis=0)
+         xtx_tot = np.sum(xtx_block_values, axis=0)
+-        for j in xrange(n_blocks):
++        for j in range(n_blocks):
+             delete_xty = xty_tot - xty_block_values[j]
+             delete_xtx = xtx_tot - xtx_block_values[j]
+             delete_values[j, ...] = np.linalg.solve(
+@@ -507,7 +507,7 @@ class RatioJackknife(Jackknife):
+         '''
+         n_blocks, p = denom.shape
+         pseudovalues = np.zeros((n_blocks, p))
+-        for j in xrange(0, n_blocks):
++        for j in range(0, n_blocks):
+             pseudovalues[j, ...] = n_blocks * est - \
+                 (n_blocks - 1) * numer[j, ...] / denom[j, ...]
+ 
+diff --git a/ldsc_mod/ldscore/ldscore.py b/ldsc_mod/ldscore/ldscore.py
+index b140093..6c5c87b 100755
+--- a/ldsc_mod/ldscore/ldscore.py
++++ b/ldsc_mod/ldscore/ldscore.py
+@@ -24,7 +24,7 @@ def getBlockLefts(coords, max_dist):
+     M = len(coords)
+     j = 0
+     block_left = np.zeros(M)
+-    for i in xrange(M):
++    for i in range(M):
+         while j < M and abs(coords[j] - coords[i]) > max_dist:
+             j += 1
+ 
+@@ -51,7 +51,7 @@ def block_left_to_right(block_left):
+     M = len(block_left)
+     j = 0
+     block_right = np.zeros(M)
+-    for i in xrange(M):
++    for i in range(M):
+         while j < M and block_left[j] <= i:
+             j += 1
+ 
+@@ -85,7 +85,7 @@ class __GenotypeArrayInMemory__(object):
+                 self.n)
+ 
+             if self.n > 0:
+-                print 'After filtering, {n} individuals remain'.format(n=self.n)
++                print('After filtering, {n} individuals remain'.format(n=self.n))
+             else:
+                 raise ValueError('After filtering, no individuals remain')
+ 
+@@ -99,7 +99,7 @@ class __GenotypeArrayInMemory__(object):
+             self.geno, self.m, self.n, self.mafMin, keep_snps)
+ 
+         if self.m > 0:
+-            print 'After filtering, {m} SNPs remain'.format(m=self.m)
++            print('After filtering, {m} SNPs remain'.format(m=self.m))
+         else:
+             raise ValueError('After filtering, no SNPs remain')
+ 
+@@ -190,7 +190,7 @@ class __GenotypeArrayInMemory__(object):
+         rfuncAB = np.zeros((b, c))
+         rfuncBB = np.zeros((c, c))
+         # chunk inside of block
+-        for l_B in xrange(0, b, c):  # l_B := index of leftmost SNP in matrix B
++        for l_B in range(0, b, c):  # l_B := index of leftmost SNP in matrix B
+             B = A[:, l_B:l_B+c]
+             np.dot(A.T, B / n, out=rfuncAB)
+             rfuncAB = func(rfuncAB)
+@@ -199,7 +199,7 @@ class __GenotypeArrayInMemory__(object):
+         b0 = b
+         md = int(c*np.floor(m/c))
+         end = md + 1 if md != m else md
+-        for l_B in xrange(b0, end, c):
++        for l_B in range(b0, end, c):
+             # check if the annot matrix is all zeros for this block + chunk
+             # this happens w/ sparse categories (i.e., pathways)
+             # update the block
+@@ -334,7 +334,7 @@ class PlinkBEDFile(__GenotypeArrayInMemory__):
+         m_poly = 0
+         y = ba.bitarray()
+         if keep_snps is None:
+-            keep_snps = xrange(m)
++            keep_snps = range(m)
+         kept_snps = []
+         freq = []
+         for e, j in enumerate(keep_snps):
+@@ -396,7 +396,7 @@ class PlinkBEDFile(__GenotypeArrayInMemory__):
+         X = np.array(slice.decode(self._bedcode), dtype="float64").reshape((b, nru)).T
+         X = X[0:n, :]
+         Y = np.zeros(X.shape)
+-        for j in xrange(0, b):
++        for j in range(0, b):
+             newsnp = X[:, j]
+             ii = newsnp != 9
+             avg = np.mean(newsnp[ii])
+diff --git a/ldsc_mod/ldscore/parse.py b/ldsc_mod/ldscore/parse.py
+index 18ea945..de80358 100755
+--- a/ldsc_mod/ldscore/parse.py
++++ b/ldsc_mod/ldscore/parse.py
+@@ -135,7 +135,7 @@ def ldscore(fh, num=None):
+     if num is not None:  # num files, e.g., one per chromosome
+         first_fh = sub_chr(fh, 1) + suffix
+         s, compression = which_compression(first_fh)
+-        chr_ld = [l2_parser(sub_chr(fh, i) + suffix + s, compression) for i in xrange(1, num + 1)]
++        chr_ld = [l2_parser(sub_chr(fh, i) + suffix + s, compression) for i in range(1, num + 1)]
+         x = pd.concat(chr_ld)  # automatically sorted by chromosome
+     else:  # just one file
+         s, compression = which_compression(fh + suffix)
+@@ -154,7 +154,7 @@ def M(fh, num=None, N=2, common=False):
+         suffix += '_5_50'
+ 
+     if num is not None:
+-        x = np.sum([parsefunc(sub_chr(fh, i) + suffix) for i in xrange(1, num + 1)], axis=0)
++        x = np.sum([parsefunc(sub_chr(fh, i) + suffix) for i in range(1, num + 1)], axis=0)
+     else:
+         x = parsefunc(fh + suffix)
+ 
+@@ -190,7 +190,7 @@ def annot(fh_list, num=None, frqfile=None):
+ 
+         y = []
+         M_tot = 0
+-        for chr in xrange(1, num + 1):
++        for chr in range(1, num + 1):
+             if frqfile is not None:
+                 df_annot_chr_list = [annot_parser(sub_chr(fh, chr) + annot_suffix[i], annot_compression[i],
+                                                   sub_chr(frqfile, chr) + frq_suffix, frq_compression)
+diff --git a/ldsc_mod/ldscore/regressions.py b/ldsc_mod/ldscore/regressions.py
+index 6340543..cdf7bc5 100755
+--- a/ldsc_mod/ldscore/regressions.py
++++ b/ldsc_mod/ldscore/regressions.py
+@@ -456,7 +456,7 @@ class Hsq(LD_Score_Regression):
+         if self.n_annot > 1:
+             if ref_ld_colnames is None:
+                 ref_ld_colnames = ['CAT_' + str(i)
+-                                   for i in xrange(self.n_annot)]
++                                   for i in range(self.n_annot)]
+ 
+             out.append('Categories: ' + ' '.join(ref_ld_colnames))
+ 
+diff --git a/ldsc_mod/ldscore/sumstats.py b/ldsc_mod/ldscore/sumstats.py
+index 37ffd63..8d00374 100755
+--- a/ldsc_mod/ldscore/sumstats.py
++++ b/ldsc_mod/ldscore/sumstats.py
+@@ -71,7 +71,7 @@ def smart_merge(x, y):
+     '''Check if SNP columns are equal. If so, save time by using concat instead of merge.'''
+     if len(x) == len(y) and (x.index == y.index).all() and (x.SNP == y.SNP).all():
+         x = x.reset_index(drop=True)
+-        y = y.reset_index(drop=True).drop('SNP', 1)
++        y = y.reset_index(drop=True).drop('SNP', axis=1)
+         out = pd.concat([x, y], axis=1)
+     else:
+         out = pd.merge(x, y, how='inner', on='SNP')
+@@ -191,14 +191,14 @@ def _check_ld_condnum(args, log, ref_ld):
+ 
+ def _check_variance(log, M_annot, ref_ld):
+     '''Remove zero-variance LD Scores.'''
+-    ii = ref_ld.ix[:, 1:].var() == 0  # NB there is a SNP column here
++    ii = ref_ld.iloc[:, 1:].var() == 0  # NB there is a SNP column here
+     if ii.all():
+         raise ValueError('All LD Scores have zero variance.')
+     else:
+         log.log('Removing partitioned LD Scores with zero variance.')
+         ii_snp = np.array([True] + list(~ii))
+         ii_m = np.array(~ii)
+-        ref_ld = ref_ld.ix[:, ii_snp]
++        ref_ld = ref_ld.loc[:, ii_snp]
+         M_annot = M_annot[:, ii_m]
+ 
+     return M_annot, ref_ld, ii
+@@ -405,8 +405,8 @@ def estimate_rg(args, log):
+                                                (args.samp_prev, '--samp-prev'),
+                                                (args.pop_prev, '--pop-prev')))
+     if args.no_intercept:
+-        args.intercept_h2 = [1 for _ in xrange(n_pheno)]
+-        args.intercept_gencov = [0 for _ in xrange(n_pheno)]
++        args.intercept_h2 = [1 for _ in range(n_pheno)]
++        args.intercept_gencov = [0 for _ in range(n_pheno)]
+     rg_paths_1 = rg_paths if args.rg_mat else rg_paths[:1]
+ 
+     RG = []
+@@ -474,7 +474,7 @@ def estimate_rg(args, log):
+             for j in range(i, n_pheno):
+                 X[j,i] =  X[i,j]
+         RG = X
+-        # RG = [RG[k,i] for  k in xrange(len(rg_paths_1)) for i in xrange(k+i, len(rg_paths))]
++        # RG = [RG[k,i] for  k in range(len(rg_paths_1)) for i in range(k+i, len(rg_paths))]
+     return RG # RG is now a matrix with None on the diagonals
+ 
+ 
+@@ -501,8 +501,8 @@ def _get_rg_table(rg_path_tups, RG, args):
+     '''Print a table of genetic correlations.'''
+     t = lambda attr: lambda obj: getattr(obj, attr, 'NA')
+     x = pd.DataFrame()
+-    x['p1'] = [rg_path_tups[i][0] for i in xrange(len(RG))]
+-    x['p2'] = [rg_path_tups[i][1] for i in xrange(len(RG))]
++    x['p1'] = [rg_path_tups[i][0] for i in range(len(RG))]
++    x['p2'] = [rg_path_tups[i][1] for i in range(len(RG))]
+     x['rg'] = map(t('rg_ratio'), RG)
+     x['se'] = map(t('rg_se'), RG)
+     x['z'] = map(t('z'), RG)
+@@ -584,7 +584,7 @@ def _rg(sumstats, args, log, M_annot, ref_ld_cnames, w_ld_cname, i1, i2):
+         n_snp = np.sum(ii)  # lambdas are late binding, so this works
+         sumstats = sumstats[ii]
+     n_blocks = min(args.n_blocks, n_snp)
+-    ref_ld = sumstats.as_matrix(columns=ref_ld_cnames)
++    ref_ld = sumstats[ref_ld_cnames].to_numpy()
+     intercepts = [args.intercept_h2[i1], args.intercept_h2[i2], args.intercept_gencov[i2]]
+     rghat = reg.RG(s(sumstats.Z1), s(sumstats.Z2),
+                    ref_ld, s(sumstats[w_ld_cname]), s(
+@@ -624,7 +624,7 @@ def _split_or_none(x, n):
+     if x is not None:
+         y = map(float, x.replace('N', '-').split(','))
+     else:
+-        y = [None for _ in xrange(n)]
++        y = [None for _ in range(n)]
+     return y
+ 
+ 
+diff --git a/ldsc_mod/munge_sumstats.py b/ldsc_mod/munge_sumstats.py
+index 586f739..bebaadf 100755
+--- a/ldsc_mod/munge_sumstats.py
++++ b/ldsc_mod/munge_sumstats.py
+@@ -246,7 +246,7 @@ def parse_dat(dat_gen, convert_colname, merge_alleles, args):
+             lambda x: x != 'INFO', dat.columns)).reset_index(drop=True)
+         drops['NA'] += old - len(dat)
+         dat.columns = map(lambda x: convert_colname[x], dat.columns)
+-        ii = np.array([True for i in xrange(len(dat))])
++        ii = np.array([True for i in range(len(dat))])
+         if args.merge_alleles:
+             old = ii.sum()
+             ii = dat.SNP.isin(merge_alleles.SNP)
+@@ -255,7 +255,7 @@ def parse_dat(dat_gen, convert_colname, merge_alleles, args):
+                 continue
+ 
+             dat = dat[ii].reset_index(drop=True)
+-            ii = np.array([True for i in xrange(len(dat))])
++            ii = np.array([True for i in range(len(dat))])
+ 
+         if 'INFO' in dat.columns:
+             old = ii.sum()
+diff --git a/mtag.py b/mtag.py
+index 855fb10..e8607a0 100755
+--- a/mtag.py
++++ b/mtag.py
+@@ -4,6 +4,7 @@
+ 
+ from __future__ import division
+ from __future__ import absolute_import
++from functools import reduce
+ import numpy as np
+ import pandas as pd
+ import scipy.optimize
+@@ -44,7 +45,7 @@ header += "\n\n"
+ 
+ pd.set_option('display.max_rows', 500)
+ pd.set_option('display.width', 800)
+-pd.set_option('precision', 12)
++pd.set_option('display.precision', 12)
+ pd.set_option('max_colwidth', 800)
+ pd.set_option('colheader_justify', 'left')
+ 
+@@ -230,7 +231,10 @@ def load_and_merge_data(args):
+     #=====================
+     # Parse inputs + filters
+     #=====================
+-    GWAS_input_files = args.sumstats.split(',')
++
++
++    GWAS_input_files = [x.strip() for x in args.sumstats.split(',')]
++
+     P = len(GWAS_input_files)  # of phenotypes/traits
+     if args.n_min is not None:
+         args.n_min_list = [float(x) for x in args.n_min.split(',')]
+@@ -527,7 +531,9 @@ def extract_gwas_sumstats(DATA, args, t0):
+     Fs: matrix of allele frequencies
+     '''
+     n_cols = ['N' +str(p) for p in t0]
+-    Ns = DATA.filter(items=n_cols).as_matrix()
++    DATA = DATA.loc[:, ~DATA.columns.duplicated()]
++
++    Ns = DATA.filter(items=n_cols).to_numpy()
+ 
+     # Apply sample-size specific filters
+ 
+@@ -578,34 +584,52 @@ def extract_gwas_sumstats(DATA, args, t0):
+     Ns = Ns[N_passFilter]
+     DATA = DATA[N_passFilter].reset_index()
+     N_raw = np.copy(Ns)
+-    f_cols = ['FRQ'+ str(p) for p in t0]
+-    Fs = DATA.filter(items=f_cols).as_matrix()
++    f_cols = ['FRQ' + str(p) for p in t0]
++    n_cols = ['N' + str(p) for p in t0]
++    z_cols = ['Z' + str(p) for p in t0]
++
++    Fs = DATA.filter(items=f_cols).to_numpy()
++    Ns = DATA.filter(items=n_cols).to_numpy()
+ 
+     if args.use_beta_se:
+-        beta_cols = ['BETA'+str(p) for p in t0]
+-        se_cols = ['SE'+str(p) for p in t0]
+-        BETAs = DATA.filter(items=beta_cols).as_matrix()
+-        SEs = DATA.filter(items=se_cols).as_matrix()
++        beta_cols = ['BETA' + str(p) for p in t0]
++        se_cols   = ['SE'   + str(p) for p in t0]
++        BETAs = DATA.filter(items=beta_cols).to_numpy()
++        SEs   = DATA.filter(items=se_cols).to_numpy()
+ 
+-        # standardizing factor
+-        std_factor = np.sqrt(2*Fs*(1-Fs))
++        # Standardizing factor
++        std_factor = np.sqrt(2 * Fs * (1 - Fs))
+         Zs = BETAs / SEs
+         SEs = np.multiply(SEs, std_factor)
+-        Ns = 1 / np.square(SEs)
++        Ns  = 1 / np.square(SEs)
+     else:
+-        z_cols = ['Z'+str(p) for p in t0]
+-        Zs = DATA.filter(items=z_cols).as_matrix()
++        Zs = DATA.filter(items=z_cols).to_numpy()
+ 
++    # Sanity check: all matrices should have same shape
+     assert Zs.shape[1] == Ns.shape[1] == Fs.shape[1]
+ 
++
+     results_template = DATA[['SNP']].copy()
+ 
++    # Handle positional and allele columns
+     if args.no_chr_data:
+-        for col in ['A1','A2']:
+-           results_template.loc[:,col] = DATA[col+str(t0[0])]
++        # When chromosome/position data not included
++        for col in ['A1', 'A2']:
++            # Use suffix per trait, not always trait 0
++            colname = col + str(t0[0])
++            if colname in DATA.columns:
++                results_template[col] = DATA[colname]
++            else:
++                results_template[col] = np.nan
+     else:
+-        for col in ['CHR','BP','A1','A2']:
+-            results_template.loc[:,col] = DATA[col+str(t0[0])]
++        # Include CHR, BP, A1, A2 if present
++        for col in ['CHR', 'BP', 'A1', 'A2']:
++            colname = col + str(t0[0])
++            if colname in DATA.columns:
++                results_template[col] = DATA[colname]
++            else:
++                results_template[col] = np.nan
++
+ 
+     # TODO: non-error form of integer conversion
+     # results_template[args.chr_name] = results_template[args.chr_name].astype(int)
+diff --git a/mtag_munge.py b/mtag_munge.py
+index dcbfb15..f9c865e 100755
+--- a/mtag_munge.py
++++ b/mtag_munge.py
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python
+ from __future__ import division
+ from __future__ import absolute_import
++from functools import reduce
+ from ldsc_mod.ldscore import allele_info as allele_info
+ import pandas as pd
+ import numpy as np
+@@ -928,7 +929,7 @@ def munge_sumstats(args, write_out=True, new_log=True):
+     except Exception:
+         logging.info('\nERROR converting summary statistics:\n')
+         ex_type, ex, tb = sys.exc_info()
+-        logging.info(traceback.format_exc(ex))
++        logging.info(traceback.format_exc())
+         raise
+     finally:
+         logging.info('\nConversion finished at {T}'.format(T=time.ctime()))

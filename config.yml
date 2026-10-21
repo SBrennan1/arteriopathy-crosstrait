@@ -1,0 +1,371 @@
+# Paths are relative to the repository root (see data/README.md for the input files).
+# Machine-specific settings can be overridden in config.local.yml (not tracked).
+
+results_dir: results
+
+# Trait order is the order used by ASSET, CPASSOC and the LDSC intercept matrix
+traits:
+  CeAD: {ncase: 1393,  ncontrol: 14416,  gws_p: 5.0e-8}
+  FMD:  {ncase: 1556,  ncontrol: 7100,   gws_p: 5.0e-8}
+  IA:   {ncase: 6242,  ncontrol: 59418,  gws_p: 5.0e-8}
+  SCAD: {ncase: 1917,  ncontrol: 9292,   gws_p: 5.0e-8}
+  AA:   {ncase: 22049, ncontrol: 419651, gws_p: 4.6e-11}
+
+# Downloaded GWAS summary statistics (build 38 files are lifted to GRCh37)
+raw_sumstats:
+  CeAD: {file: data/raw/cadisp.CEADALL.Debette2015_1000G.EUR.GWAS.txt.gz, build: 37}
+  FMD:  {file: data/raw/GCST90026612.h.tsv.gz, build: 38}
+  IA:   {file: data/raw/IA.GWAS.BakkerMK.2020.sumstats.Stage_1_excludingUKBB.txt.gz, build: 37}
+  SCAD: {file: data/raw/GCST90245878_buildGRCh37.tsv.gz, build: 37}
+  AA:   {file: data/raw/GCST90475993.tsv.gz, build: 38}
+
+# Formatted summary statistics (GRCh37), written by 00_data/01_prepare_sumstats.R
+sumstats:
+  CeAD: data/sumstats/CeAD_univar.tsv.gz
+  FMD:  data/sumstats/FMD_univar.tsv.gz
+  IA:   data/sumstats/IA_univar.tsv.gz
+  SCAD: data/sumstats/SCAD_univar.tsv.gz
+  AA:   data/sumstats/AA_univar.tsv.gz
+
+munged_dir: results/ldsc/munged         # HapMap3 SNPs, for LDSC
+munged_full_dir: results/munged_full    # all SNPs, for ASSET, CPASSOC and MTAG
+
+ldsc:
+  munge: munge_sumstats.py
+  ldsc: ldsc.py
+  hm3: data/ref/hm3_no_MHC_3col.txt
+  ref_ld: data/ref/1000G_Phase3_ldscores/LDscore.
+  w_ld: data/ref/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.
+
+gcov_int: config/ldsc_gcov_int.tsv
+
+ldsc_h2:
+  prevalence:
+    CeAD: {samp: 0.0888, pop: 0.001}
+    FMD:  {samp: 0.1797, pop: 0.005}
+    IA:   {samp: 0.5,    pop: 0.02}
+    SCAD: {samp: 0.1717, pop: 0.0001}
+    AA:   {samp: 0.0497, pop: 0.01}
+
+# 1000 Genomes phase 3 EUR PLINK files
+ld_ref: data/ref/1kg_eur/EUR            # genome-wide, for clumping
+ld_ref_chr: data/ref/1kg_eur_chr/       # per chromosome ({chr}.bed), for SuSiE
+
+clump: {p: 5.0e-8, r2: 0.1, kb: 500}
+
+gtf_grch37: data/ref/Homo_sapiens.GRCh37.87.gtf.gz
+chain_hg19_to_hg38: data/ref/hg19ToHg38.over.chain
+chain_hg38_to_hg19: data/ref/hg38ToHg19.over.chain
+
+gwas_catalog: data/ref/gwas_catalog_associations.tsv
+known_loci_extra: config/known_loci_literature.tsv
+catalog_terms:
+  CeAD: [cervical artery dissection, carotid dissection, vertebral dissection]
+  FMD:  [fibromuscular dysplasia]
+  IA:   [intracranial aneurysm, cerebral aneurysm, brain aneurysm]
+  SCAD: [spontaneous coronary artery dissection, coronary artery dissection]
+  AA:   [aortic aneurysm, abdominal aortic aneurysm, thoracic aortic aneurysm]
+
+cpassoc_functions: external/CPASSOC/FunctionSet.R
+
+mtag:
+  dir: data/mtag
+  outputs:                # target trait: MTAG output file
+    SCAD: SCAD_CeAD_trait_1.txt
+    CeAD: SCAD_CeAD_trait_2.txt
+    AA:   AA_IA_trait_1.txt
+    IA:   AA_IA_trait_2.txt
+  fuma_dir: data/fuma     # FUMA SNP2GENE output, one folder per target trait
+  univ_support_p: 0.001
+
+mtag_logs:
+  SCAD-CeAD: SCAD_CeAD.log
+  AA-CeAD:   AA_CeAD.log
+  AA-IA:     AA_IA.log
+
+# Cross-trait colocalization
+coloc:
+  window_kb: 500
+  p1: 1.0e-4
+  p2: 1.0e-4
+  p12: 1.0e-5
+  min_snps: 20
+
+# UK Biobank LD matrices (Weissbrod et al. 2020); python with numpy and scipy
+ukbb_ld:
+  dir: data/ref/ukbb_ld
+  python: ~
+
+susie:
+  window_kb: 500
+  min_snps: 20
+  L: 5
+  max_iter: 500
+  coverage: 0.95
+  ridge: [0.01, 0.05, 0.10]
+  pph4_strong: 0.8
+  pph4_moderate: 0.5
+  p1: 1.0e-4
+  p2: 1.0e-4
+  p12: 5.0e-6
+
+# Variant-to-gene mapping
+v2g:
+  overrides: config/v2g_overrides.tsv
+  window_kb: 500
+  pp_h4: 0.8
+  p1: 1.0e-4
+  p2: 1.0e-4
+  p12: 5.0e-6
+  min_gwas_snps: 100
+  min_eqtl_snps: 50
+  coding_min_pip: 0.1
+  e2g_min_pip: 0.1
+  e2g_min_score: 0.5
+  vep_url: https://grch37.rest.ensembl.org/vep/human/id
+  opentargets_url: https://api.platform.opentargets.org/api/v4/graphql
+
+# GTEx v10 eQTL all-pairs parquet files ({tissue}.v10.allpairs.chr{chr}.parquet)
+gtex_v10:
+  dir: data/ref/gtex_v10
+  gencode: data/ref/gencode.v39.annotation.gtf.gz
+  tissues:                # sample sizes
+    Artery_Aorta: 432
+    Artery_Coronary: 240
+    Artery_Tibial: 663
+
+# Mendelian randomization
+mr:
+  olink:                  # UKB-PPP cis-pQTL table (Sun et al. 2023)
+    raw: data/mr/Olink.csv
+    p: 1.7e-11
+    f_min: 10
+    clump_r2: 0.001
+    clump_kb: 250
+  pqtl_instruments:
+    Olink:  results/mr/instruments_olink.tsv
+    deCODE: data/mr/pqtls_soma_37.csv
+  eqtl:
+    qcd:                  # lead cis-eQTL per gene (GTEx v10, GRCh38)
+      Artery_Aorta:    data/mr/eqtl/Artery_Aorta_all_genes_QCd_mr_instruments.csv
+      Artery_Coronary: data/mr/eqtl/Artery_Coronary_all_genes_QCd_mr_instruments.csv
+      Artery_Tibial:   data/mr/eqtl/Artery_Tibial_all_genes_QCd_mr_instruments.csv
+      Whole_Blood:     data/mr/eqtl/Whole_Blood_all_genes_QCd_mr_instruments.csv
+      Fibroblast:      data/mr/eqtl/Cells_Cultured_fibroblasts_all_genes_QCd_mr_instruments.csv
+    p: 5.0e-8
+    instruments: results/mr/eqtl_instruments
+    arterial_tissues: [Artery_Aorta, Artery_Coronary, Artery_Tibial]
+  harmonise_action: 2
+  methods: [mr_wald_ratio, mr_ivw_fe]
+  fdr: 0.05
+  replication:
+    cohort: {deCODE: Fenland, Olink: SCALLOP}
+    window_kb: 100
+    p: 5.0e-8
+    clump_r2: 0.001
+    clump_kb: 10000
+    fenland: data/mr/replication/Fenland.csv
+    scallop:
+      dir: data/mr/replication
+      file_names: {MMP12: MMP-12}
+
+# Colocalization of MR associations
+qtl_coloc:
+  fdr: 0.05
+  strong: 0.80
+  suggestive: 0.70
+  regions: config/pqtl_coloc_regions.tsv
+  window_kb: 500
+  min_snps: 10
+  p1: 1.0e-4
+  p2: 1.0e-4
+  p12: 5.0e-6
+  ld_prune_r: 0.9999
+  ridge: 1.0e-4
+  cs_merge_r2: 0.8
+  susie_max_iter: 2000
+  olink:
+    dir: data/pqtl/ukb_ppp
+    rsid_map_dir: data/pqtl/ukb_ppp_rsid_map
+    sample_size: 35000
+  decode:
+    dir: data/decode/37
+    sample_size: 35559
+  eqtl:
+    dir: results/eqtl_subsets
+    tissue_files:
+      Fibroblast: Cells_Cultured_fibroblasts
+    min_snps: 50
+    p1: 1.0e-4
+    p2: 1.0e-4
+    p12: 1.0e-5
+
+# Genotype-Phenotype Map, blood pressure MR and CAD direction of effect
+gpmap:
+  guids: ~                # GPMap upload IDs per trait (set in config.local.yml)
+  label_fixes:
+    ENSG00000272368: DUSP6
+    HDAC1P1: HDAC4
+    BUD13: ZNF259
+    FGGY-DT: FGGY
+    ATP2B1-AS1: ATP2B1
+    LINC01615: "LINC01615*"
+    LINC02468: "LINC02468*"
+    SOCS2-AS1: SOCS2
+    MARCKSL1P1: MARCKSL1
+    CDKN2B: CDKN2B-AS1
+  bp_mr:
+    ids: {SBP: ieu-b-5138, DBP: ieu-b-5139, PP: ieu-b-5140}
+    p: 5.0e-8
+    clump_r2: 0.001
+    clump_kb: 10000
+    min_snps: 3
+    or_per_mmhg: 10
+  cad_sumstats: data/ref/GCST90132314_buildGRCh37.tsv
+
+# Pathway enrichment
+enrichment:
+  padj: 0.05
+  qvalue_cutoff: 0.2
+  asset_fuma_dir: data/fuma/ASSET              # FUMA SNP2GENE on the ASSET statistics
+  asset_canonical_ngenes: [10, 500]
+  gene2func_dir: data/fuma/gene2func_ASSET     # FUMA GENE2FUNC on the ASSET genes
+
+annotation:
+  ensembl_rest: https://grch37.rest.ensembl.org
+
+# Open Targets
+drug_targets:
+  diseases:
+    AA: {query: aortic aneurysm}
+    IA: {query: intracranial aneurysm}
+    CeAD: {query: cervical artery dissection}
+    SCAD: {query: spontaneous coronary artery dissection}
+    FMD: {query: fibromuscular dysplasia}
+  cardiovascular_area: EFO_0000319
+  indication_patterns:
+    cardiovascular: [cardi, coronar, vascul, arter, aort, aneurysm, hypertens, stroke, thromb,
+                     heart, atheroscl, myocard, angina, embol, ischem, ischaem]
+    lipid: [cholesterol, lipid, lipoprotein, triglycerid, sitosterol]
+
+convergence:
+  coloc_pph4: 0.8
+  min_traits: 3
+  monogenic: config/monogenic_genes.tsv
+  target_engage_patterns: [inhibitor, agonist, antagonist, modulator, antibody, binder, ligand,
+                           activator, inducer, blocker, disruptor, degrader, stabiliser,
+                           stabilizer, opener]
+  drug_blacklist:                            # do not act on the gene product
+    - COLLAGENASE CLOSTRIDIUM HISTOLYTICUM
+    - OCRIPLASMIN
+
+prioritization:
+  gtex_median_tpm: data/ref/GTEx_Analysis_v10_RNASeQCv2.4.2_gene_median_tpm.gct.gz
+  loeuf_intolerant: 0.6
+  action_patterns:
+    inhibit: [inhibitor, antagonist, blocker, negative, degrader, disrupting, inverse agonist,
+              antisense, rnai]
+    activate: [agonist, activator, positive, opener, stabili, inducer, exogenous]
+  modalities:
+    Inhibit: [SM, AB, PROTAC, OC]
+    Activate: [SM, AB]
+  locus_kb: 1000
+  protein_altering:
+    ld_population: 1000GENOMES:phase_3:EUR
+    r2: 0.8
+    window_kb: 500
+    consequences: [missense_variant, stop_gained, stop_lost, start_lost, frameshift_variant,
+                   inframe_insertion, inframe_deletion, protein_altering_variant,
+                   splice_donor_variant, splice_acceptor_variant]
+  direction_overrides:
+    IL6R:
+      action: Inhibit
+      reason: >-
+        The pQTL measures soluble IL-6R; the Asp358Ala allele that raises it lowers
+        membrane IL-6R signaling, so higher soluble IL-6R with lower risk implies inhibition
+
+# Negative controls (Pan-UK Biobank phecodes matched on EUR case count)
+negative_controls:
+  manifest: https://pan-ukb-us-east-1.s3.amazonaws.com/sumstats_release/phenotype_manifest.tsv.bgz
+  dir: data/negative_controls
+  draws: config/negative_control_draws.tsv
+  n_draws: 100
+  n_ldsc: 30
+  case_tol: {default: 0.25, AA: 0.5}
+  match_h2_z: false
+  h2z_tol: 0.5
+  qc_keep: [PASS, not_EUR_plus_1, h2_z_insignificant]
+  exclude: [circulatory, cardi, heart, hypertens, blood pressure, aneurysm, dissection, arter,
+            aort, coronary, angina, infarct, vascular, vein, varicose, embol, thromb, stroke,
+            cerebrovasc, hemorrhage, haemorrhage, migraine, headache, connective tissue,
+            marfan, ehlers, fibromuscular, raynaud, dementia, diabet, lipid, cholesterol,
+            obes, smok, tobacco, hernia, diverticul, polycystic, cystic kidney, varices,
+            hemorrhoid, haemorrhoid, atrial, fibrillation, dysrhythm, arrhythm, ischem, ischaem,
+            intracranial, emphysema, obstructive, polymyalgia, gout, renal failure,
+            chronic kidney, alcohol, apnea, apnoea, erectile, chest pain, palpitation,
+            syncope, dyspn, lipoid, anticoag, antiplatelet, aspirin, statin]
+  seed: 20261012
+  reference:              # hair color (Pan-UKB field 1747, blonde)
+    hair_colour: {trait_type: categorical, phenocode: "1747", coding: "1"}
+  reference_file: config/negative_control_reference.tsv
+
+# Cell-type expression
+vascular:
+  specific_p_other: 0.05
+  locus_window_kb: 500
+  expressed_pct: 0.10
+  min_cells: 20
+  n_perm: 10000
+  seed: 20261014
+  datasets:
+    hca_artery:           # CELLxGENE dataset 43245158-5ae1-4e71-a9a6-67eef49c26bc
+      format: h5ad
+      file: data/vascular/hca_artery.h5ad
+      donor: donor_id
+      region: tissue
+      cell_type: cell_type
+      gene_id: ensembl
+    brain_aneurysm:       # https://brain-aneur.cells.ucsc.edu
+      format: mtx
+      matrix: data/vascular/brain_aneurysm/counts_matrix.mtx.gz
+      features: data/vascular/brain_aneurysm/counts_features.tsv.gz
+      barcodes: data/vascular/brain_aneurysm/counts_barcodes.tsv.gz
+      meta: data/vascular/brain_aneurysm/meta.tsv
+      donor: Sample
+      region: Condition
+      cell_type: Annotations
+      gene_id: symbol
+      sn_samples: '^(Ax|TB|UCSF)'
+      figure_exclude: [AC, Neu, OL, OPC]
+      cell_type_labels:
+        EC: Endothelial cell
+        SMC: Smooth muscle cell
+        FBMC: Fibromyocyte
+        FB: Fibroblast
+        aFB: Activated fibroblast (POSTN+)
+        mFB: Myofibroblast (LAMB1+)
+        TC: T cell
+        NK: NK cell
+        BC: B cell
+        pDC: Plasmacytoid DC
+        cDC: Conventional DC
+        PVM: Perivascular macrophage
+        Mono: Monocyte
+        aMac: ACP5+ macrophage
+        MG: Microglia
+        AC: Astrocyte
+        Neu: Neuron
+        OL: Oligodendrocyte
+        OPC: OPC
+  brain_conditions: {case: aneurysm, control: control}
+  aaa:
+    geo: GSE57691
+    dir: data/vascular/gse57691
+    case_pattern: aneurysm|AAA
+    control_pattern: control|donor
+
+# Supplementary tables prepared outside the pipeline
+supplementary_tables:
+  study_characteristics: config/study_characteristics.tsv
+  cross_ancestry_mtag: data/cross_ancestry/cross_ancestry_mtag_ia_aad.tsv
+  cross_ancestry_coloc: data/cross_ancestry/cross_ancestry_coloc_ia_aad.tsv

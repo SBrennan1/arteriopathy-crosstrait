@@ -1,0 +1,15 @@
+analysis	rsid	gene	evidence	note
+ASSET	rs1537373	CDKN2B-AS1	Literature	9p21 locus; CDKN2A eQTL colocalises
+ASSET	rs1073443	NUCB2	Nearest gene	Unnamed lncRNA eQTL colocalises; nearest protein-coding gene used
+ASSET	rs1524775	SNX13	Nearest gene	Unannotated TEC gene eQTL colocalises; nearest protein-coding gene used
+ASSET	rs4404180	GATA6-AS1	eQTL colocalization	GATA6-AS1 eQTL colocalises; GATA6 (411kb) biologically plausible
+ASSET	rs12739770	FGGY	eQTL colocalization	FGGY-DT lncRNA eQTL colocalises; mapped to antisense gene FGGY
+ASSET	rs10519203	ADAMTS7	eQTL colocalization	HYKK locus. CHRNA5 coding variant in CS (PIP=0.03); ADAMTS7 eQTL coloc (H4=0.99) is established vascular gene
+ASSET	rs13294	ECM1	Convergent multi-omic	Curated choice, not data-driven: the tiered assignment is ADAMTSL4 (eQTL coloc H4=0.99; two independent credible sets). ECM1 was chosen because protein MR, expression MR and pathway results converge on it, so this locus is not independent support for those MR findings.
+MTAG	rs11105378	ATP2B1		ATP2B1-AS1 lncRNA eQTL colocalises; mapped to antisense gene ATP2B1
+MTAG	rs11661542	GATA6-AS1		GATA6-AS1 eQTL colocalises; GATA6 biologically plausible
+MTAG	rs12739770	FGGY		FGGY-DT lncRNA eQTL colocalises; mapped to antisense gene FGGY
+MTAG	rs137507			Intronic to SYN3; TIMP3 (24kb, ECM metalloproteinase inhibitor) biologically plausible
+CPASSOC	rs12739770	FGGY		FGGY-DT lncRNA eQTL colocalises; mapped to antisense gene FGGY
+CPASSOC	rs4404180	GATA6-AS1		GATA6-AS1 eQTL colocalises; GATA6 biologically plausible
+CPASSOC	rs7768154	THBS2		THBS2-AS1 lncRNA eQTL colocalises; mapped to antisense gene THBS2
