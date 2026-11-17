@@ -6,7 +6,7 @@ dissection (CeAD), intracranial aneurysm (IA), spontaneous coronary artery disse
 dysplasia (FMD).
 
 > Brennan SO, et al. Shared polygenic architecture across arteriopathies: an integrative
-> cross-trait analysis. *Circulation: Genomic and Precision Medicine* (2026).
+> cross-trait analysis.
 
 ## Analyses
 
